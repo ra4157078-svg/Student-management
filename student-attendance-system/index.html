@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-graduation-cap"></i>
+                <span>EduAttend</span>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item active" data-target="dashboard">
+                    <i class="fas fa-th-large"></i> <span>Dashboard</span>
+                </li>
+                <li class="nav-item" data-target="manage-students">
+                    <i class="fas fa-users"></i> <span>Manage Students</span>
+                </li>
+                <li class="nav-item" data-target="take-attendance">
+                    <i class="fas fa-calendar-check"></i> <span>Take Attendance</span>
+                </li>
+                <li class="nav-item" data-target="attendance-history">
+                    <i class="fas fa-history"></i> <span>History</span>
+                </li>
+                <li class="nav-item" data-target="reports">
+                    <i class="fas fa-chart-bar"></i> <span>Reports</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <header class="top-nav">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="globalSearch" placeholder="Search anything...">
+                </div>
+                <div class="user-profile">
+                    <span>Administrator</span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" alt="User Avatar">
+                </div>
+            </header>
+
+            <!-- Pages -->
+            <div class="page active" id="dashboard">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-users blue"></i>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Students</span>
+                            <span class="stat-value" id="statTotalStudents">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-check-circle green"></i>
+                        <div class="stat-info">
+                            <span class="stat-label">Present Today</span>
+                            <span class="stat-value" id="statPresentToday">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-times-circle red"></i>
+                        <div class="stat-info">
+                            <span class="stat-label">Absent Today</span>
+                            <span class="stat-value" id="statAbsentToday">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock yellow"></i>
+                        <div class="stat-info">
+                            <span class="stat-label">Late Today</span>
+                            <span class="stat-value" id="statLateToday">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-section">
+                    <div class="card">
+                        <h3>Attendance Overview</h3>
+                        <div class="attendance-percentage">
+                            <div class="perc-circle">
+                                <span id="overallPercentage">0%</span>
+                            </div>
+                            <p>Overall Attendance Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page" id="manage-students">
+                <div class="page-header">
+                    <h1 class="page-title">Manage Students</h1>
+                    <button class="btn-primary" id="openStudentModal">
+                        <i class="fas fa-plus"></i> Add Student
+                    </button>
+                </div>
+                <div class="table-controls">
+                    <input type="text" id="studentSearch" placeholder="Search by name or ID...">
+                </div>
+                <div class="table-container">
+                    <table id="studentTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Full Name</th>
+                                <th>Gender</th>
+                                <th>Class</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="page" id="take-attendance">
+                <h1 class="page-title">Take Attendance</h1>
+                <div class="attendance-setup card">
+                    <div class="input-group">
+                        <label>Date</label>
+                        <input type="date" id="attendanceDate">
+                    </div>
+                    <div class="input-group">
+                        <label>Class</label>
+                        <select id="attendanceClassSelect"></select>
+                    </div>
+                    <button class="btn-primary" id="loadAttendanceList">Load Students</button>
+                </div>
+                <div id="attendanceListContainer" style="display: none;">
+                    <div class="table-container">
+                        <table id="attendanceTable">
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="action-bar">
+                        <button class="btn-success" id="saveAttendance">Save Attendance</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page" id="attendance-history">
+                <h1 class="page-title">Attendance History</h1>
+                <div class="history-filters card">
+                    <div class="input-group">
+                        <label>Student ID</label>
+                        <input type="text" id="historyStudentId" placeholder="Enter ID">
+                    </div>
+                    <div class="input-group">
+                        <label>Date</label>
+                        <input type="date" id="historyDate">
+                    </div>
+                    <button class="btn-primary" id="filterHistory">Filter</button>
+                </div>
+                <div class="table-container">
+                    <table id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="page" id="reports">
+                <h1 class="page-title">Reports</h1>
+                <div class="report-filters card">
+                    <div class="input-group">
+                        <label>From</label>
+                        <input type="date" id="reportFrom">
+                    </div>
+                    <div class="input-group">
+                        <label>To</label>
+                        <input type="date" id="reportTo">
+                    </div>
+                    <button class="btn-primary" id="generateReport">Generate Report</button>
+                </div>
+                <div id="reportResults" class="report-results"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Student Modal -->
+    <div class="modal" id="studentModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Add New Student</h2>
+            <form id="studentForm">
+                <input type="hidden" id="editStudentId">
+                <div class="form-group">
+                    <label>Student ID</label>
+                    <input type="text" id="stuId" required>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="stuName" required>
+                </div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select id="stuGender" required>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Class</label>
+                    <input type="text" id="stuClass" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="closeModal">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
